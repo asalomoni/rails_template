@@ -1,0 +1,34 @@
+it:
+  activerecord:
+    errors:
+      template:
+        header:
+          one: "Non posso salvare questo %{model}: 1 errore"
+          other: "Non posso salvare questo %{model}: %{count} errori."
+        body: "Per favore ricontrolla i seguenti campi:"
+      messages:
+        inclusion: "non è incluso nella lista"
+        exclusion: "è riservato"
+        invalid: "non è valido"
+        confirmation: "non coincide con la conferma"
+        accepted: "deve essere accettata"
+        empty: "non può essere vuoto"
+        blank: "Non può essere lasciato in bianco"
+        too_long: "è troppo lungo (il massimo è %{count} lettere)"
+        too_short: "è troppo corto (il minimo è %{count} lettere)"
+        wrong_length: "è della lunghezza sbagliata (deve essere di %{count} lettere)"
+        taken: "è già in uso"
+        already_confirmed: "Email gia confermata"
+        not_found: "Email non trovata"
+        not_a_number: "non è un numero"
+        greater_than: "deve essere superiore a %{count}"
+        greater_than_or_equal_to: "deve essere superiore o uguale a %{count}"
+        equal_to: "deve essere uguale a %{count}"
+        less_than: "deve essere meno di %{count}"
+        less_than_or_equal_to: "deve essere meno o uguale a %{count}"
+        odd: "deve essere dispari"
+        even: "deve essere pari"
+        email_record_invalid: "La validazione e fallita: %{errors}"
+    models:
+
+
