@@ -1,0 +1,31 @@
+<% if partials %>
+    <% partials.each do |p| %>
+        $("<%= p[0] %>").html("<%= j render p[1] %>");
+    <% end %>
+<% end %>
+
+<% if html %>
+    <% html.each do |h| %>
+        $("<%= h[0] %>").html("<%= h[1] %>");
+    <% end %>
+<% end %>
+
+<% if errors && errors.length > 0 %>
+    <% errors.each do |e| %>
+        $("<%= e %>").html("<%= j render_messages %>");
+    <% end %>
+<% end %>
+
+<% if hide_modals %>
+    <% hide_modals.each do |h| %>
+        $("<%= h %>").modal('hide');
+    <% end %>
+<% end %>
+
+<% if show_modals %>
+    <% show_modals.each do |s| %>
+        $("<%= s %>").modal('show');;
+    <% end %>
+<% end %>
+
+refresh();

@@ -1,0 +1,14 @@
+development: &defaults
+  repository: "#{::Rails.root}/public"
+
+development_psql:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
+
+staging:
+  <<: *defaults

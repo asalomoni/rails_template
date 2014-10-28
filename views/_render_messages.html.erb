@@ -1,0 +1,134 @@
+<style>
+    .render_messages {
+        padding:6px;
+    }
+
+    .expanded_box, .reduced_box {
+        padding:5px;
+    }
+
+    .hide_show_box {
+        width:100px;
+        float:right;
+        text-align:right;
+    }
+
+    .no_margins {
+        margin:0px;
+    }
+
+    .full_messages {
+        max-height:200px;
+        margin-right:100px;
+        overflow-x:hidden;
+        overflow-y:auto;
+    }
+
+    .error_text {
+        color: black;
+    }
+</style>
+
+<% type = render_messages_options[Messageable.var(:type)] %>
+<% format = render_messages_options[Messageable.var(:format)] %>
+<% messages = render_messages_options[Messageable.var(:messages)] %>
+
+<% unless messages.blank? %>
+    <% if type == :success %>
+        <div class="render_messages" id="<%= id %>" >
+          <div class="alert alert-success alert-dismissible no_margins" >
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <p><%= messages.html_safe %></p>
+          </div>
+        </div>
+    <% elsif type == :error %>
+        <% if format == :string %>
+            <div class="render_messages" id="<%= id %>" >
+              <div class="alert alert-danger alert-dismissible no_margins" >
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <p><%= messages.html_safe %></p>
+              </div>
+            </div>
+        <% elsif format == :decorator || format == :array  %>
+            <div class="render_messages" id="<%= id %>" >
+              <div class="alert alert-danger no_margins" >
+
+                <% multiple_errors = false %>
+                <% if format == :decorator %>
+                    <% if messages.errors_count > 1 %>
+                        <% multiple_errors = true %>
+                    <% end %>
+                <% else %>
+                    <% if messages.length > 1 %>
+                        <% multiple_errors = true %>
+                    <% end %>
+                <% end %>
+
+                <div class="expanded_box" >
+                  <div class="hide_show_box" >
+                    <% if multiple_errors %>
+                        <%= link_to 'Nascondi', '#', class: 'hide_button' %>
+                    <% end %>
+                  </div>
+
+                  <div class="full_messages" >
+                    <% if format == :decorator %>
+                        <% if messages.custom_messages %>
+                            <% messages.custom_messages.each_with_index do |message, index| %>
+                                <li><span><%= message %></span></li>
+                            <% end %>
+                        <% end %>
+                        <% messages.keys.each_with_index do |field, index| %>
+                            <% unless messages.attribute_excluded? field %>
+                                <li><span><%= "#{messages.t_key(field)}: " %></span><span class="error_text"><%= " #{render_messages_options[Messageable.var(:messages)].t_messages(field)}" %></span></li>
+                            <% end %>
+                        <% end %>
+                    <% else %>
+                        <% messages.each do |message| %>
+                            <li><%= message %></li>
+                        <% end %>
+                    <% end %>
+                  </div>
+
+                  <div class="isu-clearfix"></div>
+                </div>
+
+                <div class="reduced_box">
+                  <div class="hide_show_box" >
+                    <% if multiple_errors %>
+                        <%= link_to 'Dettagli', '#', class: 'show_button' %>
+                    <% end %>
+                  </div>
+
+                  <div class="partial_messages" >
+                    <p class="no_margins">Alcuni dei campi non sono stati compilati correttamente.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <% end %>
+    <% end %>
+<% end %>
+
+<%= javascript_tag do %>
+    $(document).ready(function(){
+    $('<%= id %> .expanded_box').show();
+    $('<%= id %> .reduced_box').hide();
+    });
+
+    $('<%= id %> .show_button').click(function() {
+    $('<%= id %> .reduced_box').hide();
+    $('<%= id %> .expanded_box').show();
+    window.history.replaceState({}, '', window.location.pathname.substring(0, window.location.pathname.length));
+    refresh();
+    });
+
+    $('<%= id %> .hide_button').click(function() {
+    $('<%= id %> .expanded_box').hide();
+    $('<%= id %> .reduced_box').show();
+    window.history.replaceState({}, '', window.location.pathname.substring(0, window.location.pathname.length));
+    refresh();
+    });
+
+    setAlerts();
+<% end %>

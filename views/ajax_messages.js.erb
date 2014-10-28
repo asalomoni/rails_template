@@ -1,0 +1,12 @@
+<% if action %>
+    <%= render template: action %>
+<% end %>
+
+<% if errors && errors.length > 0 %>
+    <% errors.each do |e| %>
+        $("<%= e %>").html("<%= j render_messages(e) %>");
+    <% end %>
+<% end %>
+
+refresh();
+

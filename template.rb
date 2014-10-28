@@ -4,7 +4,6 @@ def source_paths
 end
 
 # INCLUDES GEMS
-
 gem_group :development, :test do
   gem 'rspec-rails'
   gem 'capybara'
@@ -14,10 +13,21 @@ gem_group :development, :test do
   gem 'binding_of_caller'
 end
 
-gem_group :production do
+group :development, :production do
   gem 'pg'
+end
+
+gem_group :production do
   gem 'rails_12factor'
   gem 'puma'
+end
+
+group :development do
+  gem 'capistrano', require: false
+  gem 'capistrano-rvm', require: false
+  gem 'capistrano-rails', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano3-puma', require: false
 end
 
 gem 'jquery-ui-rails'
@@ -30,7 +40,7 @@ gem 'breadcrumbs_on_rails'
 
 gem 'password_strength'
 
-gem 'enumerize'
+gem 'enumerize', git: 'https://github.com/INTERSAIL/enumerize.git'
 
 gem 'simple_form'
 
@@ -39,6 +49,16 @@ gem 'seed_dump'
 gem 'will_paginate'
 
 gem 'placeholder-gem'
+
+gem 'jquery-fileupload-rails'
+
+gem 'jquery-minicolors-rails'
+
+gem 'draper'
+
+gem 'sidekiq'
+
+gem 'colorize'
 
 run 'bundle install'
 run 'bundle update'
@@ -73,12 +93,6 @@ if rails_admin == 'y' || rails_admin.blank?
   gem 'rails_admin'
   run 'bundle install'
   generate 'rails_admin:install'
-
-  initializer 'kaminari.rb', <<-CODE
-  Kaminari.configure do |config|
-    config.page_method_name = :per_page_kaminari
-  end
-  CODE
 end
 
 # SIMPLE_FORM INSTALLATION
@@ -89,19 +103,40 @@ run 'rm -rf test'
 generate 'rspec:install'
 insert_into_file 'spec/spec_helper.rb', "require 'capybara/rails'\nrequire 'shoulda/matchers'\n", after: "require 'rspec/autorun'\n"
 
+# IMAGES
+copy_file 'images/logo_intersail.png', 'app/assets/images/logo_intersail.png'
+
+# VIEWS
+copy_file 'views/_render_messages.html.erb', 'app/views/_render_messages.html.erb'
+copy_file 'views/ajax_messages.js.erb', 'app/views/ajax_messages.js.erb'
+copy_file 'views/ajax_response.js.erb', 'app/views/ajax_response.js.erb'
+
+# CONTROLLER CONCERNS
+copy_file 'controllers/concerns/ajax_responseable.rb', 'app/controllers/concerns/ajax_responseable.rb'
+copy_file 'controllers/concerns/messageable.rb', 'app/controllers/concerns/messageable.rb'
+copy_file 'controllers/concerns/params_storable.rb', 'app/controllers/concerns/params_storable.rb'
+
+# DECORATORS
+copy_file 'decorators/error_decorator.rb', 'app/decorators/error_decorator.rb'
+
+# INPUTS
+copy_file 'inputs/duration_input.rb', 'app/inputs/duration_input.rb'
+copy_file 'inputs/time_collection_input.rb', 'app/inputs/time_collection_input.rb'
+
 # STYLESHEET ASSETS
 copy_file 'stylesheets/_util.css.scss', 'app/assets/stylesheets/_util.css.scss'
 create_file 'app/assets/stylesheets/common.css.scss'
 append_file 'app/assets/stylesheets/common.css.scss', "@import \"util\";\n"
-insert_into_file 'app/assets/stylesheets/application.css', "\n *= require jquery.ui.all\n *= require common\n", after: "*= require_tree ."
+insert_into_file 'app/assets/stylesheets/application.css', "\n *= require jquery.ui.all\n *= require jquery.fileupload-ui\n *= require jquery.minicolors\n *= require common\n", after: "*= require_tree ."
 
 # JAVASCRIPT ASSETS
 copy_file 'javascripts/_util.js', 'app/assets/javascripts/_util.js'
 create_file 'app/assets/javascripts/common.js.coffee'
-insert_into_file 'app/assets/javascripts/application.js', "//= require placeholder\n", before: "//= require_tree ."
+insert_into_file 'app/assets/javascripts/application.js', "//= require jquery\n //= require jquery_ujs\n //= require turbolinks\n //= require jquery-fileupload/basic\n //= require jquery.ui\n //= require placeholder\n //= require jquery.minicolors\n //= require jquery.minicolors.simple_form\n", before: "//= require_tree ."
 
 # HELPERS
 copy_file 'helpers/bootstrap_flash_helper.rb', 'app/helpers/bootstrap_flash_helper.rb'
+copy_file 'helpers/layout_helper.rb', 'app/helpers/layout_helper.rb'
 
 # LOCALES
 copy_file 'locales/activerecord.it.yml', 'config/locales/activerecord.it.yml'
@@ -120,6 +155,11 @@ CODE
 initializer 'locale.rb', <<-CODE
 I18n.default_locale = :it
 CODE
+
+copy_file 'initializers/kaminari.rb', 'config/initializers/kaminari.rb'
+
+copy_file 'initializers/load_config.rb', 'config/initializers/load_config.rb'
+copy_file 'initializers/config.yml', 'config/config.yml'
 
 # CONFIGURATIONS
 insert_into_file 'config/application.rb', "\nI18n.enforce_available_locales = false\n", after: "Bundler.require(*Rails.groups)\n"
