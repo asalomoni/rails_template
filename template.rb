@@ -13,7 +13,7 @@ gem_group :development, :test do
   gem 'binding_of_caller'
 end
 
-group :development, :production do
+gem_group :development, :production do
   gem 'pg'
 end
 
@@ -22,7 +22,7 @@ gem_group :production do
   gem 'puma'
 end
 
-group :development do
+gem_group :development do
   gem 'capistrano', require: false
   gem 'capistrano-rvm', require: false
   gem 'capistrano-rails', require: false
@@ -107,9 +107,9 @@ insert_into_file 'spec/spec_helper.rb', "require 'capybara/rails'\nrequire 'shou
 copy_file 'images/logo_intersail.png', 'app/assets/images/logo_intersail.png'
 
 # VIEWS
-copy_file 'views/_render_messages.html.erb', 'app/views/_render_messages.html.erb'
-copy_file 'views/ajax_messages.js.erb', 'app/views/ajax_messages.js.erb'
-copy_file 'views/ajax_response.js.erb', 'app/views/ajax_response.js.erb'
+copy_file 'views/_render_messages.html.erb', 'app/views/layouts/_render_messages.html.erb'
+copy_file 'views/ajax_messages.js.erb', 'app/views/layouts/ajax_messages.js.erb'
+copy_file 'views/ajax_response.js.erb', 'app/views/layouts/ajax_response.js.erb'
 
 # CONTROLLER CONCERNS
 copy_file 'controllers/concerns/ajax_responseable.rb', 'app/controllers/concerns/ajax_responseable.rb'
@@ -145,6 +145,12 @@ copy_file 'locales/it.yml', 'config/locales/it.yml'
 copy_file 'locales/rails_admin.it.yml', 'config/locales/rails_admin.it.yml'
 copy_file 'locales/simple_form.it.yml', 'config/locales/simple_form.it.yml'
 copy_file 'locales/will_paginate.it.yml', 'config/locales/will_paginate.it.yml'
+
+# LIB
+copy_file 'lib/color_util.rb', 'lib/util/color_util.rb'
+copy_file 'lib/document_util.rb', 'lib/util/document_util.rb'
+copy_file 'lib/pdf_tk_engine.rb', 'lib/util/pdf_tk_engine.rb'
+copy_file 'lib/reflection_util.rb', 'lib/util/reflection_util.rb'
 
 # INITIALIZERS
 initializer 'will_paginate.rb', <<-CODE
